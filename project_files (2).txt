@@ -1,0 +1,350 @@
+# README.md
+
+# 🤖 AI Workflow Builder
+
+نظام شامل لأتمتة المهام باستخدام الذكاء الاصطناعي. يدعم النظام مهام متنوعة مثل كتابة المحتوى، تحليل البيانات، تلخيص النصوص، كتابة الإيميلات، الترجمة، وتوليد الكود.
+
+## ✨ المميزات
+
+- 📝 **كتابة المحتوى**: إنتاج مقالات ومنشورات وتقارير
+- 📊 **تحليل البيانات**: تحليل ملفات CSV و JSON مع رؤى ذكية
+- 📄 **تلخيص النصوص**: تلخيص المقالات والوثائق الطويلة
+- 📧 **كتابة الإيميلات**: إنشاء رسائل إلكترونية احترافية
+- 🌐 **الترجمة**: ترجمة النصوص بين لغات مختلفة
+- 💻 **توليد الكود**: كتابة كود برمجي بلغات مختلفة
+- 🔄 **سير العمل**: ربط مهام متعددة في سير عمل واحد
+- 🖥️ **واجهات متعددة**: سطر الأوامر وواجهة ويب
+
+## 🚀 التثبيت والإعداد
+
+### 1. استنساخ المشروع
+```bash
+git clone https://github.com/yourusername/ai-workflow-builder.git
+cd ai-workflow-builder
+```
+
+### 2. إنشاء بيئة Python افتراضية
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# أو
+venv\Scripts\activate     # Windows
+```
+
+### 3. تثبيت المتطلبات
+```bash
+pip install -r requirements.txt
+```
+
+### 4. إعداد متغيرات البيئة
+إنشاء ملف `.env` في جذر المشروع:
+```env
+OPENAI_API_KEY=your_openai_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here  # اختياري
+```
+
+## 🎯 الاستخدام
+
+### واجهة سطر الأوامر
+
+#### إنشاء مهمة جديدة
+```bash
+python cli.py create-task --type content_writing --title "مقال عن الذكاء الاصطناعي" --description "كتابة مقال شامل" --execute
+```
+
+#### الوضع التفاعلي
+```bash
+python cli.py interactive
+```
+
+#### عرض قائمة المهام
+```bash
+python cli.py list-tasks --format table
+```
+
+#### إنشاء سير عمل من ملف
+```bash
+python cli.py create-workflow --workflow-file workflow_example.json --execute
+```
+
+### واجهة الويب
+
+```bash
+streamlit run streamlit_app.py
+```
+
+ثم افتح المتصفح على `http://localhost:8501`
+
+### استخدام مباشر في Python
+
+```python
+import asyncio
+from main import AIWorkflowBuilder, TaskType
+
+async def main():
+    # إنشاء مثيل النظام
+    workflow_builder = AIWorkflowBuilder()
+    
+    # إضافة مهمة كتابة محتوى
+    task_id = workflow_builder.add_task(
+        TaskType.CONTENT_WRITING,
+        "مقال عن البرمجة",
+        "كتابة مقال تعليمي عن البرمجة",
+        {
+            "prompt": "اكتب مقالاً تعليمياً عن أساسيات البرمجة للمبتدئين",
+            "content_type": "مقال تعليمي",
+            "language": "arabic"
+        }
+    )
+    
+    # تنفيذ المهمة
+    task = next(t for t in workflow_builder.tasks if t.id == task_id)
+    result = await workflow_builder.execute_task(task)
+    
+    print("النتيجة:", result)
+
+asyncio.run(main())
+```
+
+## 📁 هيكل المشروع
+
+```
+ai-workflow-builder/
+├── main.py              # الوحدة الرئيسية
+├── config.py            # إعدادات التطبيق
+├── cli.py               # واجهة سطر الأوامر
+├── streamlit_app.py     # واجهة الويب
+├── requirements.txt     # متطلبات Python
+├── README.md           # دليل المستخدم
+├── .env.example        # مثال متغيرات البيئة
+├── .gitignore          # ملفات Git المتجاهلة
+├── data/               # مجلد البيانات
+├── results/            # مجلد النتائج
+├── logs/               # مجلد السجلات
+└── templates/          # قوالب المهام
+```
+
+## 🛠️ أمثلة الاستخدام
+
+### مثال 1: كتابة محتوى
+```python
+task_id = workflow_builder.add_task(
+    TaskType.CONTENT_WRITING,
+    "مقال عن التكنولوجيا",
+    "كتابة مقال عن تأثير التكنولوجيا",
+    {
+        "prompt": "اكتب مقالاً عن تأثير التكنولوجيا على التعليم",
+        "content_type": "مقال",
+        "language": "arabic",
+        "tone": "professional"
+    }
+)
+```
+
+### مثال 2: تحليل البيانات
+```python
+task_id = workflow_builder.add_task(
+    TaskType.DATA_ANALYSIS,
+    "تحليل بيانات المبيعات",
+    "تحليل ملف بيانات المبيعات الشهرية",
+    {
+        "data_path": "sales_data.csv",
+        "analysis_type": "detailed",
+        "include_charts": True
+    }
+)
+```
+
+### مثال 3: سير عمل متكامل
+```python
+# إنشاء مهام متعددة
+content_task = workflow_builder.add_task(...)
+summary_task = workflow_builder.add_task(...)
+email_task = workflow_builder.add_task(...)
+
+# إنشاء سير عمل
+workflow_builder.create_workflow("content_workflow", [content_task, summary_task, email_task])
+
+# تنفيذ سير العمل
+results = await workflow_builder.execute_workflow("content_workflow")
+```
+
+## 🔧 التخصيص والتطوير
+
+### إضافة نوع مهمة جديد
+
+1. إضافة النوع إلى `TaskType` في `main.py`
+2. إنشاء دالة معالجة في `AIWorkflowBuilder`
+3. إضافة النموذج في `config.py`
+4. تحديث واجهتي CLI و Streamlit
+
+### تخصيص النماذج والقوالب
+
+تحرير ملف `config.py` لتعديل:
+- قوالب المهام الافتراضية
+- إعدادات النماذج
+- رسائل النظام
+- ألوان وأيقونات الواجهة
+
+## 📊 مراقبة الأداء
+
+النظام يسجل تلقائياً:
+- أوقات تنفيذ المهام
+- معدلات النجاح والفشل
+- استهلاك API
+- أخطاء التشغيل
+
+## 🤝 المساهمة
+
+نرحب بمساهماتكم! يرجى:
+
+1. Fork المشروع
+2. إنشاء فرع للميزة الجديدة
+3. Commit التغييرات
+4. Push إلى الفرع
+5. إنشاء Pull Request
+
+## 📄 الترخيص
+
+هذا المشروع مرخص تحت رخصة MIT - انظر ملف [LICENSE](LICENSE) للتفاصيل.
+
+## 🆘 الدعم
+
+- **المشاكل**: [GitHub Issues](https://github.com/yourusername/ai-workflow-builder/issues)
+- **الوثائق**: [Wiki](https://github.com/yourusername/ai-workflow-builder/wiki)
+- **المجتمع**: [Discussions](https://github.com/yourusername/ai-workflow-builder/discussions)
+
+## 🚧 الميزات القادمة
+
+- [ ] دعم المزيد من نماذج AI
+- [ ] تكامل مع قواعد البيانات
+- [ ] جدولة المهام
+- [ ] واجهة REST API
+- [ ] تصدير إلى تنسيقات مختلفة
+- [ ] نظام المستخدمين والأذونات
+
+---
+
+# .env.example
+
+# OpenAI API Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Anthropic API Configuration (Optional)
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# Application Settings
+LOG_LEVEL=INFO
+MAX_CONCURRENT_TASKS=5
+DEFAULT_MODEL=gpt-3.5-turbo
+
+# File Upload Settings
+MAX_FILE_SIZE=10485760  # 10MB in bytes
+
+# UI Settings
+STREAMLIT_THEME=dark
+UI_TITLE=AI Workflow Builder
+
+---
+
+# .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Environment Variables
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Data Files
+data/
+temp/
+uploads/
+*.csv
+*.xlsx
+*.json
+*.txt
+
+# Results
+results/
+output/
+exports/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Streamlit
+.streamlit/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+
+# pytest
+.pytest_cache/
+
+# Coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+---
+
+# workflow_example.json
+
+{
+  "name": "مثال_سير_العمل_المتكامل",
+  "description": "مثال شامل على سير عمل يتضمن كتابة محتوى وتحليل وترجمة",
+  "tasks": [
+    {
+      "type": "content_writing",
+      "title": "كتابة مقال عن الذكاء الاصطناعي",
+      "description": "كتابة مقال شامل عن تطبيقات الذكاء الا
